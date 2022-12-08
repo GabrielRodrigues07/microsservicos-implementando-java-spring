@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -49,4 +50,10 @@ public class PagamentoService {
     public void excluirPagamento(Long id) {
         pagamentoRepository.deleteById(id);
     }
+
+//    @Transactional
+//    public void excluirPagamento(Long id) {
+//        PagamentoDto pagamentoDto = obterPorId(id);
+//        pagamentoDto.setAtivo(false);
+//    }
 }
