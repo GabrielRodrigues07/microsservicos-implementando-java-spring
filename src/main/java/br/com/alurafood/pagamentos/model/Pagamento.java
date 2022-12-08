@@ -1,6 +1,7 @@
 package br.com.alurafood.pagamentos.model;
 
 import br.com.alurafood.pagamentos.model.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -54,4 +55,7 @@ public class Pagamento {
 
     @NotNull
     private Long formaDePagamentoId;
+
+    @JsonIgnore
+    private boolean ativo = true;
 }
