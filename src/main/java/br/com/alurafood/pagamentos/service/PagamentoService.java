@@ -21,7 +21,7 @@ public class PagamentoService {
 
     public Page<PagamentoDto> obterTodos(Pageable paginacao) {
         return pagamentoRepository
-                .findAll(paginacao)
+                .findByAtivoTrue(paginacao)
                 .map(p -> modelMapper.map(p, PagamentoDto.class));
     }
 
@@ -35,6 +35,7 @@ public class PagamentoService {
     public PagamentoDto criarPagamento(PagamentoDto dto) {
         Pagamento pagamento = modelMapper.map(dto, Pagamento.class);
         pagamento.setStatus(Status.CRIADO);
+        pagamento.setAtivo(true);
         pagamentoRepository.save(pagamento);
 
         return modelMapper.map(pagamento, PagamentoDto.class);
@@ -47,13 +48,13 @@ public class PagamentoService {
         return modelMapper.map(pagamento, PagamentoDto.class);
     }
 
-    public void excluirPagamento(Long id) {
-        pagamentoRepository.deleteById(id);
-    }
-
-//    @Transactional
 //    public void excluirPagamento(Long id) {
-//        PagamentoDto pagamentoDto = obterPorId(id);
-//        pagamentoDto.setAtivo(false);
+//        pagamentoRepository.deleteById(id);
 //    }
+
+    @Transactional
+    public void excluirPagamento(Long id) {
+        Pagamento pagamento = pagamentoRepository.getReferenceById(id);
+        pagamento.setAtivo(false);
+    }
 }

@@ -1,6 +1,7 @@
 package br.com.alurafood.pagamentos.dto;
 
 import br.com.alurafood.pagamentos.model.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,5 +20,6 @@ public class PagamentoDto {
     private Status status;
     private Long formaDePagamentoId;
     private Long pedidoId;
+    @JsonIgnore
     private boolean ativo;
 }

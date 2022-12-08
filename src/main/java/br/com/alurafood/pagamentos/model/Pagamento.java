@@ -57,5 +57,5 @@ public class Pagamento {
     private Long formaDePagamentoId;
 
     @JsonIgnore
-    private boolean ativo = true;
+    private boolean ativo;
 }
