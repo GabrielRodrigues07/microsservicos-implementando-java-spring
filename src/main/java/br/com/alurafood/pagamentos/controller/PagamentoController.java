@@ -42,9 +42,9 @@ public class PagamentoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PagamentoDto> atualizar(@PathVariable @NotNull Long id, @RequestBody @Valid PagamentoDto dto) {
-        PagamentoDto atualizado = service.atualizarPagamento(id, dto);
-        return ResponseEntity.ok(atualizado);
+    public ResponseEntity<Void> atualizar(@PathVariable @NotNull Long id, @RequestBody @Valid PagamentoDto dto) {
+        service.atualizarPagamento(id, dto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

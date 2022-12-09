@@ -27,7 +27,7 @@ public class PagamentoService {
 
     public PagamentoDto obterPorId(Long id) {
         Pagamento pagamento = pagamentoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(() -> new EntityNotFoundException("Pagamento não encontrado. Id: " + id));
 
         return modelMapper.map(pagamento, PagamentoDto.class);
     }
@@ -41,20 +41,21 @@ public class PagamentoService {
         return modelMapper.map(pagamento, PagamentoDto.class);
     }
 
-    public PagamentoDto atualizarPagamento(Long id, PagamentoDto dto) {
-        Pagamento pagamento = modelMapper.map(dto, Pagamento.class);
-        pagamento.setId(id);
-        pagamento = pagamentoRepository.save(pagamento);
-        return modelMapper.map(pagamento, PagamentoDto.class);
+    @Transactional
+    public void atualizarPagamento(Long id, PagamentoDto dto) {
+        Pagamento pagamento = pagamentoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pagamento não encontrado. Id: " + id));
+        dto.setId(id);
+        dto.setAtivo(true);
+        modelMapper.map(dto, pagamento);
     }
-
-//    public void excluirPagamento(Long id) {
-//        pagamentoRepository.deleteById(id);
-//    }
 
     @Transactional
     public void excluirPagamento(Long id) {
         Pagamento pagamento = pagamentoRepository.getReferenceById(id);
+        if (!pagamento.isAtivo()) {
+            throw new EntityNotFoundException("Pagamento não encontrado. Id: " + pagamento.getId());
+        }
         pagamento.setAtivo(false);
     }
 }
