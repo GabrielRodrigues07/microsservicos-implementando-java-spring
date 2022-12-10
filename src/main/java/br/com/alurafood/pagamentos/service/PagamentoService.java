@@ -4,13 +4,14 @@ import br.com.alurafood.pagamentos.dto.PagamentoDto;
 import br.com.alurafood.pagamentos.model.Pagamento;
 import br.com.alurafood.pagamentos.model.enums.Status;
 import br.com.alurafood.pagamentos.repository.PagamentoRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
 
 @Service
 @AllArgsConstructor
@@ -52,9 +53,10 @@ public class PagamentoService {
 
     @Transactional
     public void excluirPagamento(Long id) {
-        Pagamento pagamento = pagamentoRepository.getReferenceById(id);
+        Pagamento pagamento = pagamentoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pagamento não encontrado. Id: " + id));
         if (!pagamento.isAtivo()) {
-            throw new EntityNotFoundException("Pagamento não encontrado. Id: " + pagamento.getId());
+            throw new EntityNotFoundException("Pagamento não encontrado. Id: " + id);
         }
         pagamento.setAtivo(false);
     }
