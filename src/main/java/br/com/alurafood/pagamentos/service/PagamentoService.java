@@ -1,6 +1,7 @@
 package br.com.alurafood.pagamentos.service;
 
 import br.com.alurafood.pagamentos.dto.PagamentoDto;
+import br.com.alurafood.pagamentos.http.PedidoClient;
 import br.com.alurafood.pagamentos.model.Pagamento;
 import br.com.alurafood.pagamentos.model.enums.Status;
 import br.com.alurafood.pagamentos.repository.PagamentoRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -19,6 +21,8 @@ public class PagamentoService {
 
     private PagamentoRepository pagamentoRepository;
     private ModelMapper modelMapper;
+    private PedidoClient pedido;
+
 
     public Page<PagamentoDto> obterTodos(Pageable paginacao) {
         return pagamentoRepository
@@ -59,5 +63,17 @@ public class PagamentoService {
             throw new EntityNotFoundException("Pagamento não encontrado. Id: " + id);
         }
         pagamento.setAtivo(false);
+    }
+
+    public void confirmarPagamento(Long id){
+        Optional<Pagamento> pagamento = pagamentoRepository.findById(id);
+
+        if (!pagamento.isPresent()) {
+            throw new EntityNotFoundException();
+        }
+
+        pagamento.get().setStatus(Status.CONFIRMADO);
+        pagamentoRepository.save(pagamento.get());
+        pedido.atualizaPagamento(pagamento.get().getPedidoId());
     }
 }
