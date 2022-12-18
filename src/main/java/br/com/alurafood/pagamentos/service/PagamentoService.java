@@ -3,6 +3,7 @@ package br.com.alurafood.pagamentos.service;
 import br.com.alurafood.pagamentos.dto.PagamentoDto;
 import br.com.alurafood.pagamentos.http.PedidoClient;
 import br.com.alurafood.pagamentos.model.Pagamento;
+import br.com.alurafood.pagamentos.model.Pedido;
 import br.com.alurafood.pagamentos.model.enums.Status;
 import br.com.alurafood.pagamentos.repository.PagamentoRepository;
 import lombok.AllArgsConstructor;
@@ -34,7 +35,9 @@ public class PagamentoService {
         Pagamento pagamento = pagamentoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pagamento não encontrado. Id: " + id));
 
-        return modelMapper.map(pagamento, PagamentoDto.class);
+        PagamentoDto pagamentoDto = modelMapper.map(pagamento, PagamentoDto.class);
+        pagamentoDto.setItens(pedido.buscarPedido(pagamento.getPedidoId()).getItens());
+        return pagamentoDto;
     }
 
     public PagamentoDto criarPagamento(PagamentoDto dto) {
